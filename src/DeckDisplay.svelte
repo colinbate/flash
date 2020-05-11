@@ -5,10 +5,6 @@ export let deck;
 let swiper;
 let card;
 
-function handleClick(ev) {
-  console.log(ev);
-}
-
 function goPrev() {
   swiper.prevItem();
 }
@@ -16,14 +12,12 @@ function goPrev() {
 function goNext() {
   swiper.nextItem();
 }
+
 </script>
 <style>
 .deckdisplay {
   width: 100%;
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .nav {
@@ -69,8 +63,8 @@ function goNext() {
 </style>
 {#if card > 0}<div class="nav prev" on:click={goPrev}></div>{/if}
 {#if card < (deck.cards.length - 1)}<div class="nav next" on:click={goNext}></div>{/if}
-<div class="deckdisplay" on:click={handleClick}>
-<Swipe autoplay={false} showIndicators={false} bind:this={swiper} bind:active_item={card}>
+<div class="deckdisplay">
+<Swipe autoplay={false} showIndicators={false} bind:this={swiper} bind:active_item={card} defaultIndex={false}>
 {#each deck.cards as card}
 <SwipeItem>
   <Card {card} />
