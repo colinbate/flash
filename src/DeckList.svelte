@@ -31,12 +31,17 @@ h1 {
 
 .controls {
   padding-right: 1rem;
+  display: none;
 }
 
 .button-area {
   border-top: 1px solid #999;
   padding: 1rem;
   margin: 0 -1rem;
+}
+
+.button-area button {
+  display: none;
 }
 
 button {

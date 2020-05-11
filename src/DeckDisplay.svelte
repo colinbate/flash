@@ -45,26 +45,34 @@ function toggleShuffle() {
 
 .nav, .shuffle {
   position: absolute;
-  bottom: 1rem;
   z-index: 1000;
-  width: 25vmin;
-  height: 25vmin;
-  border-radius: 9999px;
+  width: 20vmin;
+  height: 20vmin;
   text-align: center;
-  line-height: 25vmin;
-  background: rgba(0, 0, 0, 0.2);
+  line-height: 20vmin;
   cursor: pointer;
+}
+
+.controls {
+  z-index: 900;
+  border-top: 1px solid #999;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  height: 20vmin;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .shuffle {
   left: 50%;
   transform: translateX(-50%);
-  padding: 5vmin;
+  padding: 4vmin;
   box-sizing: border-box;
 }
 
 .shuffle.shuffled {
-  color: hsl(120, 100%, 41%);
+  color: hsl(120, 100%, 30%);
 }
 
 .nav::before {
@@ -72,12 +80,12 @@ function toggleShuffle() {
 	border-width: 1vmin 1vmin 0 0;
 	content: '';
 	display: block;
-	height: 10vmin;
+	height: 8vmin;
 	left: 50%;
 	position: absolute;
   top: 50%;
   transform-origin: center;
-	width: 10vmin;
+	width: 8vmin;
 }
 
 .nav.next::before {
@@ -89,17 +97,19 @@ function toggleShuffle() {
 }
 
 .prev {
-  left: 1rem;
+  left: 0;
 }
 
 .next {
-  right: 1rem;
+  right: 0;
 }
 </style>
-{#if card > 0}<div class="nav prev" on:click={goPrev}></div>{/if}
-{#if card < (cards.length - 1)}<div class="nav next" on:click={goNext}></div>{/if}
-<div class="shuffle" class:shuffled on:click={toggleShuffle}>
-<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="random" class="svg-inline--fa fa-random fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M505 400l-79.2 72.9c-15.1 15.1-41.8 4.4-41.8-17v-40h-31c-3.3 0-6.5-1.4-8.8-3.9l-89.8-97.2 38.1-41.3 79.8 86.3H384v-48c0-21.4 26.7-32.1 41.8-17l79.2 71c9.3 9.6 9.3 24.8 0 34.2zM12 152h91.8l79.8 86.3 38.1-41.3-89.8-97.2c-2.3-2.5-5.5-3.9-8.8-3.9H12c-6.6 0-12 5.4-12 12v32c0 6.7 5.4 12.1 12 12.1zm493-41.9l-79.2-71C410.7 24 384 34.7 384 56v40h-31c-3.3 0-6.5 1.4-8.8 3.9L103.8 360H12c-6.6 0-12 5.4-12 12v32c0 6.6 5.4 12 12 12h111c3.3 0 6.5-1.4 8.8-3.9L372.2 152H384v48c0 21.4 26.7 32.1 41.8 17l79.2-73c9.3-9.4 9.3-24.6 0-33.9z"></path></svg>
+<div class="controls">
+  {#if card > 0}<div class="nav prev" on:click={goPrev}></div>{/if}
+  {#if card < (cards.length - 1)}<div class="nav next" on:click={goNext}></div>{/if}
+  <div class="shuffle" class:shuffled on:click={toggleShuffle}>
+    <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="random" class="svg-inline--fa fa-random fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M505 400l-79.2 72.9c-15.1 15.1-41.8 4.4-41.8-17v-40h-31c-3.3 0-6.5-1.4-8.8-3.9l-89.8-97.2 38.1-41.3 79.8 86.3H384v-48c0-21.4 26.7-32.1 41.8-17l79.2 71c9.3 9.6 9.3 24.8 0 34.2zM12 152h91.8l79.8 86.3 38.1-41.3-89.8-97.2c-2.3-2.5-5.5-3.9-8.8-3.9H12c-6.6 0-12 5.4-12 12v32c0 6.7 5.4 12.1 12 12.1zm493-41.9l-79.2-71C410.7 24 384 34.7 384 56v40h-31c-3.3 0-6.5 1.4-8.8 3.9L103.8 360H12c-6.6 0-12 5.4-12 12v32c0 6.6 5.4 12 12 12h111c3.3 0 6.5-1.4 8.8-3.9L372.2 152H384v48c0 21.4 26.7 32.1 41.8 17l79.2-73c9.3-9.4 9.3-24.6 0-33.9z"></path></svg>
+  </div>
 </div>
 <div class="deckdisplay">
 <Swipe autoplay={false} showIndicators={false} bind:this={swiper} bind:active_item={card} defaultIndex={false}>
