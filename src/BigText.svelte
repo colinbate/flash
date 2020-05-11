@@ -1,5 +1,5 @@
 <script>
-import { onMount, onDestroy } from 'svelte';
+import { onMount, onDestroy, afterUpdate } from 'svelte';
 export let word;
 
 let div;
@@ -72,6 +72,8 @@ function maxText(elem) {
 function update() {
   maxText(div);
 }
+
+afterUpdate(update);
 
 onMount(() => {
   update()
