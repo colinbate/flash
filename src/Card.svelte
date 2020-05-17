@@ -13,6 +13,10 @@ export let card;
   box-shadow: 0 1rem 1.5rem rgba(0, 0, 0, 0.25), 0 0.25rem 0.33rem rgba(0, 0, 0, 0.12);
 }
 
+.card.correct {
+  color: green;
+}
+
 .inner {
   display: flex;
   align-items: center;
@@ -20,7 +24,7 @@ export let card;
   height: calc(100% - 20vmin);
 }
 </style>
-<div class="card">
+<div class="card" class:correct={card.correct}>
   <div class="inner">
     <BigText word={card.front} />
   </div>

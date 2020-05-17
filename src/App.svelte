@@ -1,6 +1,18 @@
 <script>
 import DeckList from './DeckList.svelte';
 import DeckDisplay from './DeckDisplay.svelte';
+export let update;
+
+update.then(avail => {
+  if (avail && window) {
+    setTimeout(() => {
+      const reload = window.location.hostname === 'localhost' ? true : confirm('New Update Available! Reload?');
+      if (reload) {
+        window.location.reload();
+      }
+    }, 1);
+  }
+});
 
 let currentDeck;
 let mode = 'open';
