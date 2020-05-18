@@ -6,7 +6,7 @@ export let card;
 .card {
   border: 1px solid #999;
   box-sizing: border-box;
-  height: calc(100vh - 2rem);
+  height: calc(var(--vh, 1vh) * 100 - 2rem);
   border-radius: 0.5rem;
   background-color: #fff;
   margin: 1rem;

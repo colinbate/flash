@@ -76,6 +76,7 @@ async function reset() {
 .deckdisplay {
   width: 100%;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 .nav, .shuffle, .mark-correct {
@@ -166,7 +167,7 @@ async function reset() {
   
 </div>
 <div class="deckdisplay">
-<Swipe autoplay={false} showIndicators={false} bind:this={swiper} bind:active_item={card} defaultIndex={false}>
+<Swipe bind:this={swiper} bind:active_item={card}>
 {#each cards as card}
 <SwipeItem>
   <Card {card} />
