@@ -43,6 +43,7 @@ window.addEventListener('resize', () => {
     final = true;
   }
 });
+setViewHeight();
 
 const app = new App({
   target: document.body,
