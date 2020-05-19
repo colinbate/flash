@@ -69,5 +69,5 @@ button {
   <div class="button-area">
     <button type="button">New Deck</button>
   </div>
-  <p>Version 1.2.2</p>
+  <p>Version 1.3.0</p>
 </div>
