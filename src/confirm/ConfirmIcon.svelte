@@ -14,12 +14,9 @@
     margin: 0;
     background-repeat: no-repeat;
     width: 2rem;
+    height: 2rem;
     background-size: 1.5rem;
     background-position: center;
-  }
-  .inner {
-    position: relative;
-    left: 9999px;
   }
   .confirming {
     background-color: hsla(345, 100%, 93%, 0.9);
@@ -62,7 +59,7 @@
 <ConfirmButton let:handleClick let:handleIn let:handleOut let:ready let:confirming on:confirm>
   <span class="wrap">
     <button class:confirming type="button" style="background-image: url('{iconUrl}');" on:click={() => {handleClick(); handleOut();}}>
-      <span class="inner"><slot>Confirm</slot></span>
+      <span class="inner sr-only"><slot>Confirm</slot></span>
     </button>
     {#if ready}
     <span class="helper" transition:fade={{duration: 175}}>

@@ -1,4 +1,4 @@
-const version = '1.4.0';
+const version = '1.5.0';
 
 const cacheName = `Flash${version}`;
 
@@ -13,6 +13,9 @@ const filesToCache = [
   '/icons/favicon-32.png',
   '/icons/favicon-16.png',
   '/icons/apple-splash-750.png',
+  '/icons/clone.svg',
+  '/icons/edit.svg',
+  '/icons/trash.svg',
 ];
 
 self.addEventListener('install', function (event) {

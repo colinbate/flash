@@ -2,12 +2,13 @@
 import DeckList from './DeckList.svelte';
 import DeckDisplay from './DeckDisplay.svelte';
 import DeckEdit from './DeckEdit.svelte';
+import DeckLoad from './DeckLoad.svelte';
 import { get, set } from './storage';
 import { builtIn } from './decks';
 export let update;
 
 const ALL_DECKS = 'ALL_DECKS';
-let allDecks = get(ALL_DECKS) || builtIn;
+let allDecks = get(ALL_DECKS) || builtIn.map(d => deepCopy(d));
 
 update.then(avail => {
   if (avail && window) {
@@ -57,22 +58,47 @@ function clone({detail}) {
   save();
 }
 
+function newDeck() {
+  const emptyDeck = {
+    name: 'Untitled Deck',
+    cards: []
+  }
+  mode = 'edit';
+  allDecks.push(emptyDeck);
+  allDecks = allDecks;
+  currentDeck = emptyDeck;
+}
+
 function leaveDeck({detail}) {
   currentDeck = null;
+  mode = 'open';
   if (detail) {
     save();
   }
 }
+
+function loadDeck() {
+  mode = 'load';
+}
+
+function chooseDeck({detail}) {
+  mode = 'open';
+  currentDeck = null;
+  allDecks.push(deepCopy(detail));
+  allDecks = allDecks;
+}
 </script>
 
 <main>
-{#if currentDeck && mode === 'open'}
+{#if mode === 'load'}
+  <DeckLoad decks={builtIn} on:choose={chooseDeck} on:leave={leaveDeck} />
+{:else if currentDeck && mode === 'open'}
   <DeckDisplay deck={currentDeck} on:leave={leaveDeck}/>
 {:else if currentDeck && mode === 'edit'}
   <DeckEdit deck={currentDeck} on:leave={leaveDeck} />
 {:else}
-  <DeckList decks={allDecks} on:open={open} on:edit={edit} on:clone={clone} on:remove={remove} />
-  <p class="version">v1.4.0</p>
+  <DeckList decks={allDecks} on:open={open} on:edit={edit} on:clone={clone} on:remove={remove} on:new={newDeck} on:load={loadDeck} />
+  <p class="version">v1.5.0</p>
 {/if}
 </main>
 
