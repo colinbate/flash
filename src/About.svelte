@@ -7,12 +7,15 @@ export let show = false;
 <style>
 .about-bubble {
   position: absolute;
-  top: 3rem;
-  left: 1rem;
-  right: 1rem;
+  top: calc(var(--vh, 1vh) * 50);
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  min-width: 15rem;
+  max-width: 66rem;
+  width: 86%;
   border: 1px solid #999;
   box-sizing: border-box;
-  max-height: calc(var(--vh, 1vh) * 100 - 5rem);
+  max-height: calc(var(--vh, 1vh) * 100 - 2rem);
   border-radius: 0.5rem;
   background-color: #fff;
   box-shadow: 0 1rem 1.5rem rgba(0, 0, 0, 0.25), 0 0.25rem 0.33rem rgba(0, 0, 0, 0.12);

@@ -1,4 +1,4 @@
-const version = '1.5.0';
+const version = '1.5.1';
 
 const cacheName = `Flash${version}`;
 
