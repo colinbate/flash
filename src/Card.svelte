@@ -22,7 +22,7 @@ export let card;
   align-items: center;
   justify-content: center;
   height: calc(100% - 20vmin);
-  font-family: Cavolini, "Comic Sans", "Comic Sans MS", "Chalkboard SE", Chalkboard, "Arial Rounded", "Arial Rounded MT", sans-serif;
+  font-family: Cavolini, "Comic Sans", "Comic Sans MS", "Chalkboard SE", Chalkboard, "TSCu_Comic", "Arial Rounded", "Arial Rounded MT", sans-serif;
 }
 </style>
 <div class="card" class:correct={card.correct}>
