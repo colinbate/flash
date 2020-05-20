@@ -98,7 +98,7 @@ function chooseDeck({detail}) {
   <DeckEdit deck={currentDeck} on:leave={leaveDeck} />
 {:else}
   <DeckList decks={allDecks} on:open={open} on:edit={edit} on:clone={clone} on:remove={remove} on:new={newDeck} on:load={loadDeck} />
-  <p class="version">v1.5.1</p>
+  <p class="version">v1.5.2</p>
 {/if}
 </main>
 
