@@ -13,13 +13,19 @@ const dispatch = createEventDispatcher();
 h1 {
   color: #ff3e00;
   text-transform: uppercase;
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 100;
   margin: 1rem 0 0 0;
   position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+@media (min-width: 375px) {
+  h1 {
+    font-size: 3rem;
+  }
 }
 
 .info {

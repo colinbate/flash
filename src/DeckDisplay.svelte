@@ -16,7 +16,9 @@ const CARD_KEY = 'CARD';
 
 $: correct = cards[card] && cards[card].correct;
 $: {
-  set(CARD_KEY, card);
+  if (card != null) {
+    set(CARD_KEY, card);
+  }
 }
 
 onMount(() => {
@@ -86,6 +88,7 @@ async function reset() {
 }
 
 function backOut() {
+  set(CARD_KEY, null);
   dispatch('leave');
 }
 </script>
