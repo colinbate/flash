@@ -1,6 +1,7 @@
 <script>
-import { tick, createEventDispatcher } from 'svelte';
+import { tick, createEventDispatcher, onMount } from 'svelte';
 import { Swipe, SwipeItem } from "./swipe";
+import { get, set } from './storage';
 import Card from './Card.svelte';
 import EndOfDeck from './EndOfDeck.svelte';
 export let deck;
@@ -11,9 +12,20 @@ let remaining = cards;
 let shuffled = false;
 let score = 0;
 const dispatch = createEventDispatcher();
+const CARD_KEY = 'CARD';
 
 $: correct = cards[card] && cards[card].correct;
+$: {
+  set(CARD_KEY, card);
+}
 
+onMount(() => {
+  const savedCard = get(CARD_KEY);
+  if (savedCard != null) {
+    card = savedCard;
+    swiper.goTo(card);
+  }
+});
 
 function goPrev() {
   swiper.prevItem();
