@@ -44,7 +44,7 @@ p {
 </style>
 {#if show}
 <div class="about-bubble" transition:fade={{duration: 200}}>
-  <h2>About FlashDeck</h2>
+  <h2>About Flash Deck</h2>
   <p>
   FlashDeck is a simple app to display flash cards for kids.
   It is designed to be used on a mobile device with an adult (or older child) present.
@@ -56,7 +56,8 @@ p {
     You can use these flash cards in whatever way works for you, but there is functionality
     to mark cards as correct while you go through the deck, then you have to option to return
     to the beginning of the deck, optionally removing the correct cards. This allows you to
-    focus on those cards which your child may not know as well.
+    focus on those cards which your child may not know as well. Correct cards are reset automatically
+    when exiting a deck.
   </p>
   <p>Created by Colin Bate.</p>
   <div class="close" on:click={() => dispatch('close')}>Close</div>

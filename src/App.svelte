@@ -8,6 +8,8 @@ import { builtIn } from './decks';
 export let update;
 
 const ALL_DECKS = 'ALL_DECKS';
+const MODE_KEY = 'MODE';
+const CURRENT_KEY = 'CURRENT';
 let allDecks = get(ALL_DECKS) || builtIn.map(d => deepCopy(d));
 
 update.then(avail => {
@@ -21,21 +23,25 @@ update.then(avail => {
   }
 });
 
-let currentDeck;
-let mode = 'open';
+let currentDeck = get(CURRENT_KEY);
+let mode = get(MODE_KEY);
 
 function save() {
   set(ALL_DECKS, allDecks);
+  set(CURRENT_KEY, currentDeck);
+  set(MODE_KEY, mode);
 }
 
 function open({detail}) {
-  currentDeck = detail;
+  currentDeck = deepCopy(detail);
   mode = 'open';
+  save();
 }
 
 function edit({detail}) {
   currentDeck = detail;
   mode = 'edit';
+  save();
 }
 
 function remove({detail}) {
@@ -67,14 +73,13 @@ function newDeck() {
   allDecks.push(emptyDeck);
   allDecks = allDecks;
   currentDeck = emptyDeck;
+  save();
 }
 
 function leaveDeck({detail}) {
   currentDeck = null;
-  mode = 'open';
-  if (detail) {
-    save();
-  }
+  mode = null;
+  save();
 }
 
 function loadDeck() {
@@ -82,10 +87,11 @@ function loadDeck() {
 }
 
 function chooseDeck({detail}) {
-  mode = 'open';
+  mode = null;
   currentDeck = null;
   allDecks.push(deepCopy(detail));
   allDecks = allDecks;
+  save();
 }
 </script>
 
@@ -98,7 +104,7 @@ function chooseDeck({detail}) {
   <DeckEdit deck={currentDeck} on:leave={leaveDeck} />
 {:else}
   <DeckList decks={allDecks} on:open={open} on:edit={edit} on:clone={clone} on:remove={remove} on:new={newDeck} on:load={loadDeck} />
-  <p class="version">v1.5.2</p>
+  <p class="version">v1.5.3</p>
 {/if}
 </main>
 
