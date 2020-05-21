@@ -1,15 +1,24 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
+  import SwipeItem from './SwipeItem.svelte';
 
   export let transitionDuration = 200;
-  export let swipeDistance = 0.2;
+  export let swipeDistance = 0.85;
   export let active_item = 0; //readonly
+  export let itemlist = [];
 
+  $: overshoot = 1 - swipeDistance - 0.02; 
+  $: {
+    itemlist.length && setRender();
+  }
+  
   let activeIndicator = 0;
-  let indicators;
+  let renderIndicator = 0;
   let items = 0;
   let availableWidth = 0;
-  let topClearence = 0;
+
+  let buffer = 2;
+  let renderlist = itemlist.slice(Math.max(0, activeIndicator - buffer), Math.min(itemlist.length, activeIndicator + buffer + 1));
 
   let elems;
   let diff = 0;
@@ -17,7 +26,6 @@
   let swipeWrapper;
   let swipeHandler;
 
-  let min = 0;
   const touchingTpl = `
     -webkit-transition-duration: 0s;
     transition-duration: 0s;
@@ -30,31 +38,32 @@
     -ms-transform: translate3d({{val}}px, 0, 0);`;
   const TOKEN = '{{val}}';
   let touching = false;
-  let posX = 0;
-  let swipingLeft = false;
   let x = 0;
 
+  async function setRender() {
+    renderlist = itemlist.slice(Math.max(0, activeIndicator - buffer), Math.min(itemlist.length, activeIndicator + buffer + 1));
+    renderIndicator = Math.min(activeIndicator, buffer);
+    await tick();
+    update();
+  }
+
   function update() {
-    swipeHandler.style.top = topClearence + 'px';
+    elems = swipeWrapper.querySelectorAll('.swipeable-item');
+    items = elems.length;
     availableWidth = swipeWrapper.querySelector('.swipeable-items').offsetWidth;
     for (let i = 0; i < items; i++) {
-      elems[i].style.transform = 'translate3d(' + (availableWidth * i) + 'px, 0, 0)';
+      elems[i].style.transform = 'translate3d(' + (availableWidth * (i - renderIndicator)) + 'px, 0, 0)';
     }
-    changeItem(active_item);
   }
 
   function init() {
-    elems = swipeWrapper.querySelectorAll('.swipeable-item');
-    items = elems.length;
     update();
   }
 
   export function reset() {
-    elems = swipeWrapper.querySelectorAll('.swipeable-item');
-    items = elems.length;
     activeIndicator = 0;
     active_item = 0;
-    update();
+    setRender();
   }
 
   onMount(() => {
@@ -76,13 +85,15 @@
       e.stopPropagation();
 
       let max = availableWidth;
+      const dragBuf = availableWidth * overshoot;
+      const minDrag = -renderIndicator * availableWidth - dragBuf;
+      const maxDrag = (renderlist.length - renderIndicator - 1) * availableWidth + dragBuf;
 
       let _x = e.touches ? e.touches[0].pageX : e.pageX;
-      swipingLeft = _x < x;
-      let _diff = swipingLeft ? (x - _x) + posX : posX - (_x - x);
-      if (_diff <= (max * (items - 1)) && _diff >= min) {
+      let _diff = x - _x;
+      if (_diff <= maxDrag && _diff >= minDrag) {
         for (let i = 0; i < items; i++) {
-          let _value = (max * i) - _diff;
+          let _value = (max * (i - renderIndicator)) - _diff;
           elems[i].style.cssText = touchingTpl.replace(TOKEN, _value).replace(TOKEN, _value);
         }
         diff = _diff;
@@ -96,26 +107,27 @@
     e && e.preventDefault();
 
     let max = availableWidth;
-    let original = activeIndicator;
+    let offset;
 
     touching = false;
     x = null;
 
     let d_max = (diff / max);
-    let target = swipingLeft ? Math.ceil(d_max) : Math.floor(d_max);
-    if (Math.abs(original - d_max) > swipeDistance) {
-      diff = target * max;
+    let target = diff > 0 ? Math.ceil(d_max) : Math.floor(d_max);
+    if (Math.abs(target - d_max) < swipeDistance) {
+      offset = target;
     } else {
-      diff = original * max;
+      offset = target + (diff > 0 ? -1 : 1);
     }
 
-    posX = diff;
-    activeIndicator = (diff / max);
+    activeIndicator += offset;
+    renderIndicator += offset;
     for (let i = 0; i < items; i++) {
-      let _value = (max * i) - posX;
+      let _value = (max * (i - renderIndicator));
       elems[i].style.cssText = non_touchingTpl.replace(TOKEN, _value).replace(TOKEN, _value);
     }
     active_item = activeIndicator;
+    setTimeout(setRender, transitionDuration);
     if (typeof window !== 'undefined') {
       window.removeEventListener('mousemove', moveHandler);
       window.removeEventListener('mouseup', endHandler);
@@ -133,6 +145,7 @@
 
     touching = true;
     x = e.touches ? e.touches[0].pageX : e.pageX;
+    diff = 0;
     if (typeof window !== 'undefined') {
       window.addEventListener('mousemove', moveHandler);
       window.addEventListener('mouseup', endHandler);
@@ -141,24 +154,28 @@
     }
   }
 
-  function changeItem(item) {
-    let max = availableWidth;
-    diff = max * item;
-    endHandler();
+  async function setItem(ind) {
+    activeIndicator = ind;
+    active_item = ind;
+    return setRender();
   }
 
   export function goTo(step) {
-    let item = Math.max(0, Math.min(step, items - 1));
-    changeItem(item)
+    let item = Math.max(0, Math.min(step, itemlist.length));
+    setItem(item);
   }
   export function prevItem() {
-    let step = activeIndicator - 1;
-    goTo(step)
+    if (activeIndicator > 0) {
+      diff = 0 - availableWidth;
+      endHandler();
+    }
   }
 
   export function nextItem() {
-    let step = activeIndicator + 1;
-    goTo(step)
+    if (activeIndicator < itemlist.length - 1) {
+      diff = availableWidth;
+      endHandler();
+    }
   }
 </script>
 
@@ -186,7 +203,7 @@
 .swipe-handler {
   width: 100%;
   position: absolute;
-  top: 40px;
+  top: 0px;
   bottom: 0px;
   left: 0;
   right: 0;
@@ -197,7 +214,11 @@
   <div class="swipe-item-wrapper" bind:this={swipeWrapper}>
     <div class="swipeable-items">
       <div class="swipeable-slot-wrapper">
-        <slot />
+        {#each renderlist as item, ii (item.id)}
+          <SwipeItem>
+            <slot {item} />
+          </SwipeItem>
+        {/each}
       </div>
     </div>
   </div>

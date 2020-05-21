@@ -1,6 +1,7 @@
 <script>
 import BigText from './BigText.svelte';
 export let card;
+export let correct;
 </script>
 <style>
 .card {
@@ -26,7 +27,7 @@ export let card;
   font-family: Cavolini, "Comic Sans", "Comic Sans MS", "Chalkboard SE", Chalkboard, "TSCu_Comic", "Arial Rounded", "Arial Rounded MT", sans-serif;
 }
 </style>
-<div class="card" class:correct={card.correct}>
+<div class="card" class:correct={correct || card.correct}>
   <div class="inner">
     <BigText word={card.front} />
   </div>

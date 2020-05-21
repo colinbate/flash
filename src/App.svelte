@@ -33,7 +33,9 @@ function save() {
 }
 
 function open({detail}) {
-  currentDeck = deepCopy(detail);
+  const viewDeck = deepCopy(detail);
+  viewDeck.cards.forEach((c, ci) => c.id = ci);
+  currentDeck = viewDeck;
   mode = 'open';
   save();
 }
@@ -104,7 +106,7 @@ function chooseDeck({detail}) {
   <DeckEdit deck={currentDeck} on:leave={leaveDeck} />
 {:else}
   <DeckList decks={allDecks} on:open={open} on:edit={edit} on:clone={clone} on:remove={remove} on:new={newDeck} on:load={loadDeck} />
-  <p class="version">v1.6.2</p>
+  <p class="version">v1.7.0</p>
 {/if}
 </main>
 

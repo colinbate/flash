@@ -1,6 +1,6 @@
 <script>
 import { tick, createEventDispatcher, onMount } from 'svelte';
-import { Swipe, SwipeItem } from "./swipe";
+import { Swipe } from "./swipe";
 import { get, set } from './storage';
 import Card from './Card.svelte';
 import EndOfDeck from './EndOfDeck.svelte';
@@ -18,8 +18,10 @@ const CURRENT_KEY = 'CURRENT';
 const CARDS_KEY = 'CARDS-STATE';
 const REMAINING_KEY = 'REMAINING';
 const SHUFFLED_KEY = 'SHUFFLED';
+const menu = {id: 'menu'};
 
 $: correct = cards[card] && cards[card].correct;
+$: cardsAndMenu = [...cards, menu];
 $: {
   if (card != null) {
     set(CARD_KEY, card);
@@ -107,6 +109,14 @@ function backOut() {
   set(REMAINING_KEY, null);
   set(SHUFFLED_KEY, null);
   dispatch('leave');
+}
+
+function handleKey(ev) {
+  if (ev.key === 'ArrowLeft') {
+    goPrev();
+  } else if (ev.key === 'ArrowRight') {
+    goNext();
+  }
 }
 </script>
 <style>
@@ -203,6 +213,7 @@ function backOut() {
   border-bottom-right-radius: 3vmin;
 }
 </style>
+<svelte:window on:keydown={handleKey} />
 <div class="controls">
   {#if card > 0}<div class="nav prev" on:click={goPrev}></div>{/if}
   {#if card < (cards.length)}
@@ -219,14 +230,11 @@ function backOut() {
   <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2"><path d="M352 217.1c0-8.8-7.2-16-16-16H192v-93.9c0-7.1-8.6-10.7-13.6-5.7L36.8 244.6c-6.3 6.3-6.3 16.4 0 22.7l141.6 143.1c5 5 13.6 1.5 13.6-5.7v-93.9h144c8.8 0 16-7.2 16-16v-77.7m32 0v77.7c0 26.5-21.5 48-48 48H224v61.9c0 35.5-43 53.5-68.2 28.3L14.1 290c-18.8-18.8-18.8-49.2 0-68L155.8 78.9c25.1-25.1 68.2-7.3 68.2 28.3v61.9h112c26.5 0 48 21.6 48 48zM512 112v288c0 26.5-21.5 48-48 48H332c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h132c8.8 0 16-7.2 16-16V112c0-8.8-7.2-16-16-16H332c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h132c26.5 0 48 21.5 48 48z" fill-rule="nonzero"/></svg>
 </div>
 <div class="deckdisplay">
-<Swipe bind:this={swiper} bind:active_item={card}>
-{#each cards as card}
-<SwipeItem>
-  <Card {card} />
-</SwipeItem>
-{/each}
-<SwipeItem>
-  <EndOfDeck on:restart={restart} on:reset={reset} total={deck.cards.length} {score} />
-</SwipeItem>
+<Swipe bind:this={swiper} bind:active_item={card} itemlist={cardsAndMenu} let:item>
+  {#if item.front}
+    <Card card={item} {correct} />
+  {:else}
+    <EndOfDeck on:restart={restart} on:reset={reset} total={deck.cards.length} {score} />
+  {/if}
 </Swipe>
 </div>
