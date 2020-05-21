@@ -7,12 +7,17 @@ import EndOfDeck from './EndOfDeck.svelte';
 export let deck;
 let swiper;
 let card;
-let cards = deck.cards;
-let remaining = cards;
-let shuffled = false;
-let score = 0;
+let remaining = get(REMAINING_KEY) || deck.cards;
+let cards = get(CARDS_KEY) || remaining;
+let shuffled = !!get(SHUFFLED_KEY);;
+let score = deck.cards.reduce((p, c) => p + (c.correct ? 1 : 0), 0);
+
 const dispatch = createEventDispatcher();
 const CARD_KEY = 'CARD';
+const CURRENT_KEY = 'CURRENT';
+const CARDS_KEY = 'CARDS-STATE';
+const REMAINING_KEY = 'REMAINING';
+const SHUFFLED_KEY = 'SHUFFLED';
 
 $: correct = cards[card] && cards[card].correct;
 $: {
@@ -21,10 +26,11 @@ $: {
   }
 }
 
-onMount(() => {
+onMount(async () => {
   const savedCard = get(CARD_KEY);
   if (savedCard != null) {
     card = savedCard;
+    await tick();
     swiper.goTo(card);
   }
 });
@@ -44,6 +50,8 @@ function toggleCorrect() {
   if (cards && cards[card]) {
     cards[card].correct = !cards[card].correct;
     score += cards[card].correct ? 1 : -1;
+    set(CURRENT_KEY, deck);
+    set(CARDS_KEY, cards);
   }
 }
 
@@ -64,6 +72,8 @@ function toggleShuffle() {
     cards = remaining;
     shuffled = false;
   }
+  set(SHUFFLED_KEY, shuffled);
+  set(CARDS_KEY, cards);
 }
 
 async function restart(ev) {
@@ -71,6 +81,8 @@ async function restart(ev) {
     console.log('trim');
     remaining = cards.filter(c => !c.correct);
     cards = remaining;
+    set(REMAINING_KEY, remaining);
+    set(CARDS_KEY, cards);
     await tick();
     swiper.reset();
     return;
@@ -82,6 +94,8 @@ async function reset() {
   remaining = deck.cards;
   cards = shuffled ? shuffle(remaining) : remaining;
   cards.forEach(c => c.correct = false);
+  set(REMAINING_KEY, remaining);
+  set(CARDS_KEY, cards);
   score = 0;
   await tick();
   swiper.reset();
@@ -89,6 +103,9 @@ async function reset() {
 
 function backOut() {
   set(CARD_KEY, null);
+  set(CARDS_KEY, null);
+  set(REMAINING_KEY, null);
+  set(SHUFFLED_KEY, null);
   dispatch('leave');
 }
 </script>
