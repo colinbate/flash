@@ -11,7 +11,7 @@
   $: {
     itemlist.length && setRender();
   }
-  
+
   let activeIndicator = 0;
   let renderIndicator = 0;
   let items = 0;
@@ -101,6 +101,11 @@
     }
   }
 
+  function transitionHandler(ev) {
+    setRender();
+    ev.target.removeEventListener('transitionend', transitionHandler);
+  }
+
   function endHandler(e) {
     e && e.stopImmediatePropagation();
     e && e.stopPropagation();
@@ -121,13 +126,13 @@
     }
 
     activeIndicator += offset;
+    elems[renderIndicator].addEventListener('transitionend', transitionHandler);
     renderIndicator += offset;
     for (let i = 0; i < items; i++) {
       let _value = (max * (i - renderIndicator));
       elems[i].style.cssText = non_touchingTpl.replace(TOKEN, _value).replace(TOKEN, _value);
     }
     active_item = activeIndicator;
-    setTimeout(setRender, transitionDuration);
     if (typeof window !== 'undefined') {
       window.removeEventListener('mousemove', moveHandler);
       window.removeEventListener('mouseup', endHandler);
