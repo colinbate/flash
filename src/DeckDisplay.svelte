@@ -116,6 +116,8 @@ function handleKey(ev) {
     goPrev();
   } else if (ev.key === 'ArrowRight') {
     goNext();
+  } else if (ev.key === ' ' || ev.key === 'Enter') {
+    toggleCorrect();
   }
 }
 </script>
@@ -232,7 +234,7 @@ function handleKey(ev) {
 <div class="deckdisplay">
 <Swipe bind:this={swiper} bind:active_item={card} itemlist={cardsAndMenu} let:item>
   {#if item.front}
-    <Card card={item} {correct} />
+    <Card card={item} />
   {:else}
     <EndOfDeck on:restart={restart} on:reset={reset} total={deck.cards.length} {score} />
   {/if}
